@@ -105,6 +105,17 @@ public class ProductoController {
 		miSession.setAttribute("productos", misProductos);
 		return new ResponseEntity<>(misProductos,HttpStatus.OK);
 	}
+	@PostMapping("/generar-compra-del-usuario")
+	public ResponseEntity<HashMap<Object,Object>> generarCompra(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
+		HttpSession miSession = request.getSession();
+		
+		HashMap<String,Integer> misProductos = (HashMap<String, Integer>) miSession.getAttribute("productos");
+		HashMap<Object,Object> output = new HashMap<Object,Object>();
+		
+		output.put("se ha generado una compra del usuario con los siguientes productos", misProductos);
+		miSession.setAttribute("productos", misProductos);
+		return new ResponseEntity<>(output,HttpStatus.OK);
+	}
 	
 	
 	
