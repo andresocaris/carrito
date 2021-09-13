@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,11 +22,13 @@ import pe.edu.ao.carrito.model.User;
 @RestController
 public class UserController {
 	@PostMapping("user")
-	public User login( @RequestParam("user") String username, @RequestParam("password") String pwd) {
+	public User login( HttpServletRequest request,@RequestParam("user") String username, @RequestParam("password") String pwd) {
 		String token=getJWTToken(username);
 		User user = new User();
 		user.setUser(username);
 		user.setToken(token);
+		HttpSession miSession = request.getSession();
+		miSession.setAttribute("usuario", username);
 		return user;
 	}
 	@RequestMapping("hello")

@@ -109,7 +109,8 @@ public class ProductoController {
 		HashMap<Object,Object> output = new HashMap<Object,Object>();
 		
 		output.put("se ha generado una compra del usuario con los siguientes productos", misProductos);
-		miSession.setAttribute("productos", misProductos);
+		output.put("usuario", miSession.getAttribute("usuario"));
+		
 		return new ResponseEntity<>(output,HttpStatus.OK);
 	}	
 	@GetMapping("/all/{cantidadPorPagina}/{numeroDePagina}")
