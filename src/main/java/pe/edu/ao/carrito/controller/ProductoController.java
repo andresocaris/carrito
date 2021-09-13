@@ -71,7 +71,6 @@ public class ProductoController {
 	}
 	@PostMapping("/agregar-productos")
 	public ResponseEntity<Object> agregarProductos(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
-		
 		HttpSession miSession = request.getSession();
 		
 		HashMap<String,Integer> misProductos = (HashMap<String, Integer>) miSession.getAttribute("productos");
