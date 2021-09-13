@@ -1,6 +1,8 @@
 package pe.edu.ao.carrito.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -68,12 +70,22 @@ public class ProductoController {
 		return new ResponseEntity<>(productosSalida,HttpStatus.OK);
 	}
 	@GetMapping("/test")
-	public ResponseEntity<Object> test(HttpServletRequest request,@RequestBody Object producto){
+	public ResponseEntity<Object> test(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
 		
 		HttpSession miSession = request.getSession();
 		
-	
-		return new ResponseEntity<>(producto,HttpStatus.OK);
+		HashMap<String,Integer> misProductos = (HashMap<String, Integer>) miSession.getAttribute("productos");
+		HashMap<String,Integer> productosIngresados = productos.get("productos");
+		
+		if (misProductos == null) {
+			misProductos = productosIngresados;
+		}else {
+			for (Map.Entry<String, Integer> producto : productosIngresados.entrySet()) {
+				misProductos.put(producto.getKey(), producto.getValue());
+			}
+		}
+		miSession.setAttribute("productos", misProductos);
+		return new ResponseEntity<>(misProductos,HttpStatus.OK);
 	}
 	
 	

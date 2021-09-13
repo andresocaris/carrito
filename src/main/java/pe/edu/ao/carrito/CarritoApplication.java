@@ -28,6 +28,7 @@ public class CarritoApplication {
 				.addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/user").permitAll()
+//				.antMatchers(HttpMethod.GET, "/producto/test").permitAll()
 				.anyRequest().authenticated();
 		}
 	}
