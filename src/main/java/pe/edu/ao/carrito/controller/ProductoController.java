@@ -2,6 +2,9 @@ package pe.edu.ao.carrito.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,9 +35,37 @@ public class ProductoController {
     }
 	
 	@GetMapping("/all")
-	public ResponseEntity<List<Producto>> obtenerProductos(){
-		List<Producto> productos = productoService.findAllProducto();
+	public ResponseEntity<List<Producto>> obtenerProductos(HttpServletRequest request){
+		
+		
+		List<Producto> productos=productoService.findAllProducto();
+		HttpSession misession= request.getSession();
+		List<Producto> productosSalida2 = (List<Producto>) misession.getAttribute("productos");
+		if (productosSalida2==null) {
+			List<Producto> productosAIngresar=productoService.findAllProducto();
+			System.out.println("es nullo los productos");
+			misession.setAttribute("productos", productosAIngresar);
+		}else {
+			List<Producto> productosAIngresar=productoService.findAllProducto();
+			
+			for (Producto x : productosAIngresar) {
+				productosSalida2.add(x);
+			}
+
+			misession.setAttribute("productos", productosSalida2);
+			
+			System.out.println("no es nullo y los productos en mi session son");
+			System.out.println(productosSalida2);
+		}
+		
+		//System.out.println("me imprime:"+productosSalida);
 		return new ResponseEntity<>(productos,HttpStatus.OK);
+	}
+	@GetMapping("/mis_objetos")
+	public ResponseEntity<List<Producto>> obtenerObjetos(HttpServletRequest request){
+		HttpSession miSession = request.getSession();
+		List<Producto> productosSalida = (List<Producto>) miSession.getAttribute("productos");
+		return new ResponseEntity<>(productosSalida,HttpStatus.OK);
 	}
 	@GetMapping("/all/{cantidadPorPagina}/{numeroDePagina}")
 	public ResponseEntity<List<Producto>> mostrarPorPagina
