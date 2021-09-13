@@ -67,6 +67,17 @@ public class ProductoController {
 		List<Producto> productosSalida = (List<Producto>) miSession.getAttribute("productos");
 		return new ResponseEntity<>(productosSalida,HttpStatus.OK);
 	}
+	@GetMapping("/test")
+	public ResponseEntity<Object> test(HttpServletRequest request,@RequestBody Object producto){
+		
+		HttpSession miSession = request.getSession();
+		
+	
+		return new ResponseEntity<>(producto,HttpStatus.OK);
+	}
+	
+	
+	
 	@GetMapping("/all/{cantidadPorPagina}/{numeroDePagina}")
 	public ResponseEntity<List<Producto>> mostrarPorPagina
 	( @PathVariable("cantidadPorPagina") Integer cantidadPorPagina, @PathVariable("numeroDePagina") Integer numeroDePagina ){
