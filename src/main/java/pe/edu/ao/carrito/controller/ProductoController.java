@@ -49,5 +49,10 @@ public class ProductoController {
 		Producto productoEditado = productoService.editarProducto(producto);
 		return new ResponseEntity<>(productoEditado,HttpStatus.OK);
 	}
+	@PutMapping("/delete/{id}")
+	public ResponseEntity<Producto> eliminarProducto(@PathVariable("id") Long id ){
+		Producto productoEliminado = productoService.eliminarProducto(id);
+		return new ResponseEntity<>(productoEliminado,HttpStatus.OK);
+	}
 	
 }

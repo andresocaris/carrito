@@ -43,4 +43,9 @@ public class ProductoService {
 		System.out.println("el producto editado es:"+productoEditado);
 		return productoRepo.save(productoEditado);
 	}
+	public Producto eliminarProducto(Long id) {
+		Producto productoEliminado =  productoRepo.findProductoById(id);
+		productoEliminado.setEstado(0);
+		return productoRepo.save(productoEliminado);
+	}
 }
