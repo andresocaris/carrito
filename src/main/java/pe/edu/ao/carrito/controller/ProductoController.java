@@ -28,18 +28,14 @@ public class ProductoController {
 	public ProductoController(ProductoService productoService ) {
 		this.productoService=productoService;
 	}
-	
 	@PostMapping("/add")
     public ResponseEntity<Producto> addEmployee(@RequestBody Producto producto) {
 		producto.setEstado(1);
         Producto newProducto = productoService.addProducto(producto);
         return new ResponseEntity<>(newProducto, HttpStatus.CREATED);
     }
-	
 	@GetMapping("/all")
 	public ResponseEntity<List<Producto>> obtenerProductos(HttpServletRequest request){
-		
-		
 		List<Producto> productos=productoService.findAllProducto();
 		HttpSession misession= request.getSession();
 		List<Producto> productosSalida2 = (List<Producto>) misession.getAttribute("productos");
@@ -115,11 +111,7 @@ public class ProductoController {
 		output.put("se ha generado una compra del usuario con los siguientes productos", misProductos);
 		miSession.setAttribute("productos", misProductos);
 		return new ResponseEntity<>(output,HttpStatus.OK);
-	}
-	
-	
-	
-	
+	}	
 	@GetMapping("/all/{cantidadPorPagina}/{numeroDePagina}")
 	public ResponseEntity<List<Producto>> mostrarPorPagina
 	( @PathVariable("cantidadPorPagina") Integer cantidadPorPagina, @PathVariable("numeroDePagina") Integer numeroDePagina ){
@@ -127,7 +119,6 @@ public class ProductoController {
 		List<Producto> productos = productoService.findProductoPorPaginacion(cantidadPorPagina,numeroDePagina);
 		return new ResponseEntity<>(productos,HttpStatus.OK);
 	}
-	
 	@PutMapping("/update")
 	public ResponseEntity<Producto> editarProducto(@RequestBody Producto producto){
 		Producto productoEditado = productoService.editarProducto(producto);
