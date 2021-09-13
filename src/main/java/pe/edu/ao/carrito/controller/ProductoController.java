@@ -69,8 +69,27 @@ public class ProductoController {
 		List<Producto> productosSalida = (List<Producto>) miSession.getAttribute("productos");
 		return new ResponseEntity<>(productosSalida,HttpStatus.OK);
 	}
-	@GetMapping("/test")
-	public ResponseEntity<Object> test(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
+	@PostMapping("/agregar-productos")
+	public ResponseEntity<Object> agregarProductos(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
+		
+		HttpSession miSession = request.getSession();
+		
+		HashMap<String,Integer> misProductos = (HashMap<String, Integer>) miSession.getAttribute("productos");
+		HashMap<String,Integer> productosIngresados = productos.get("productos");
+		
+		if (misProductos == null) {
+			misProductos = productosIngresados;
+		}else {
+			for (Map.Entry<String, Integer> producto : productosIngresados.entrySet()) {
+				Integer cantidadAnterior = misProductos.get(producto.getKey())==null?0:misProductos.get(producto.getKey());
+				misProductos.put(producto.getKey(), cantidadAnterior + producto.getValue());
+			}
+		}
+		miSession.setAttribute("productos", misProductos);
+		return new ResponseEntity<>(misProductos,HttpStatus.OK);
+	}
+	@PostMapping("/eliminar-productos")
+	public ResponseEntity<Object> eliminarProductos(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
 		
 		HttpSession miSession = request.getSession();
 		
@@ -87,6 +106,7 @@ public class ProductoController {
 		miSession.setAttribute("productos", misProductos);
 		return new ResponseEntity<>(misProductos,HttpStatus.OK);
 	}
+	
 	
 	
 	
