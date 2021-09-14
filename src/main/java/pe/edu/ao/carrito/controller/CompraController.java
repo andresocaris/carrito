@@ -114,4 +114,10 @@ public class CompraController {
 		}
 		return new ResponseEntity<>(treeMap2,HttpStatus.OK);
 	}
+	@GetMapping("/mostrar-categoria-mas-demandadas")
+	public ResponseEntity<List<String>> mostrarCategoriaMasDemandad(){
+		List<Compra> compras = compraService.findAllCompra();
+		List<String> categoriasMasDemandadas=compraService.categoriaMasDemanda(compras);
+		return new ResponseEntity<>(categoriasMasDemandadas,HttpStatus.OK);
+	}
 }
