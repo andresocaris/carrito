@@ -90,12 +90,12 @@ public class ProductoController {
 		HashMap<String,Integer> misProductos = (HashMap<String, Integer>) miSession.getAttribute("productos");
 		HashMap<String,Integer> productosIngresados = productos.get("productos");
 		
-		if (misProductos == null) {
-			misProductos = productosIngresados;
-		}else {
+		if (misProductos != null) {
 			for (Map.Entry<String, Integer> producto : productosIngresados.entrySet()) {
 				Integer cantidadAnterior = misProductos.get(producto.getKey())==null?0:misProductos.get(producto.getKey());
-				misProductos.put(producto.getKey(), (cantidadAnterior-producto.getValue()<0?0:cantidadAnterior-producto.getValue()));
+				Integer cantidadActual=cantidadAnterior-producto.getValue()<0?0:cantidadAnterior-producto.getValue();
+				if (cantidadActual>0)misProductos.put(producto.getKey(), cantidadActual);
+				else misProductos.remove(producto.getKey());
 			}
 		}
 		miSession.setAttribute("productos", misProductos);
