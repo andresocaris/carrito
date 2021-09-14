@@ -8,4 +8,6 @@ public interface UsuarioRepo extends JpaRepository<Usuario,Integer>{
 
 	Usuario findByNombreAndPwd(String nombre, String contrasena);
 
+	Usuario getByNombre(String nombre);
+
 }

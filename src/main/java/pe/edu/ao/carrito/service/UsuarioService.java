@@ -16,4 +16,7 @@ public class UsuarioService {
 	public Usuario busquedaPorNombreContrasena(String nombre,String contrasena) {
 		return usuarioRepo.findByNombreAndPwd(nombre,contrasena);
 	}
+	public Integer ObtenerIdPorNombre(String nombre) {
+		return usuarioRepo.getByNombre(nombre).getId();
+	}
 }
