@@ -71,8 +71,13 @@ public class ProductoController {
 			System.out.println("no es nullo y los productos en mi session son");
 			System.out.println(productosSalida2);
 		}
+		return new ResponseEntity<>(productos,HttpStatus.OK);
+	}
+	@GetMapping("/all/{cantidadPorPagina}/{numeroDePagina}")
+	public ResponseEntity<List<Producto>> mostrarPorPagina
+	( @PathVariable("cantidadPorPagina") Integer cantidadPorPagina, @PathVariable("numeroDePagina") Integer numeroDePagina ){
 		
-		//System.out.println("me imprime:"+productosSalida);
+		List<Producto> productos = productoService.findProductoPorPaginacion(cantidadPorPagina,numeroDePagina);
 		return new ResponseEntity<>(productos,HttpStatus.OK);
 	}
 	@PostMapping("/agregar-productos")
@@ -138,13 +143,4 @@ public class ProductoController {
 		}
 		return new ResponseEntity<>(output,HttpStatus.OK);
 	}	
-	@GetMapping("/all/{cantidadPorPagina}/{numeroDePagina}")
-	public ResponseEntity<List<Producto>> mostrarPorPagina
-	( @PathVariable("cantidadPorPagina") Integer cantidadPorPagina, @PathVariable("numeroDePagina") Integer numeroDePagina ){
-		
-		List<Producto> productos = productoService.findProductoPorPaginacion(cantidadPorPagina,numeroDePagina);
-		return new ResponseEntity<>(productos,HttpStatus.OK);
-	}
-
-	
 }
