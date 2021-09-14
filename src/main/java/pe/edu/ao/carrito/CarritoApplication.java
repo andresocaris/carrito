@@ -29,6 +29,7 @@ public class CarritoApplication {
 				.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/user").permitAll()
 				.antMatchers(HttpMethod.POST, "/compras/mostrar-por-usuario").permitAll()
+				.antMatchers(HttpMethod.POST, "/compras/mostrar-por-usuario-paginacion/{\\d+}/{\\d+}").permitAll()
 //				.antMatchers(HttpMethod.POST, "/producto/agregar-productos").permitAll()
 				.anyRequest().authenticated();
 		}

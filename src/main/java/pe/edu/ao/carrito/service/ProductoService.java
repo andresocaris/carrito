@@ -27,6 +27,9 @@ public class ProductoService {
 	public Producto findProductoByNombre(String nombre) {
 		return productoRepo.findProductoByName(nombre);
 	}
+	public Producto findProductoById(Integer idProducto) {
+		return productoRepo.findProductoById(idProducto);
+	}
 	public List<Producto> findProductoPorPaginacion(Integer cantidadPorPagina, Integer numeroPagina ){
 		List<Producto> productos = productoRepo.findAll();
 		List<Producto> productosMostrados = new ArrayList<>();
