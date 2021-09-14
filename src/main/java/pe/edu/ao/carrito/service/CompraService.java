@@ -19,7 +19,10 @@ public class CompraService {
 	public  Compra addCompra( Compra  Compra) {
 		return  compraRepo.save( Compra);
 	}
-	public List< Compra> findAllCompra(){
+	public List<Compra> findAllCompra(){
 		return  compraRepo.findAll();
 	}	
+	public List<Compra>comprasPorUsuario(Integer idUsuario){
+		return compraRepo.findByIdUsuario(idUsuario);
+	}
 }
