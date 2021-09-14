@@ -29,6 +29,7 @@ public class UserController {
 		user.setToken(token);
 		HttpSession miSession = request.getSession();
 		miSession.setAttribute("usuario", username);
+		miSession.setAttribute("idUsuario", 1);
 		return user;
 	}
 	@RequestMapping("hello")

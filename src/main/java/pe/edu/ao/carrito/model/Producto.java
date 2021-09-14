@@ -11,16 +11,16 @@ public class Producto {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false, updatable = false)
-    private Long id;
+    private Integer id;
     private String name;
-    private Long costo;
+    private Integer costo;
     private Integer estado;
     
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 	public String getName() {
@@ -29,10 +29,10 @@ public class Producto {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Long getCosto() {
+	public Integer getCosto() {
 		return costo;
 	}
-	public void setCosto(Long costo) {
+	public void setCosto(Integer costo) {
 		this.costo = costo;
 	}
 

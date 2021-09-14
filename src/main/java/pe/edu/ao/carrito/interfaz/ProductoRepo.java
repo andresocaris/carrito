@@ -4,8 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import pe.edu.ao.carrito.model.Producto;
 
-public interface ProductoRepo extends JpaRepository<Producto,Long>{
+public interface ProductoRepo extends JpaRepository<Producto,Integer>{
 
-	Producto findProductoById(Long id);
+	Producto findProductoById(Integer integer);
+	Producto findProductoByName(String nombre);
 	
 }

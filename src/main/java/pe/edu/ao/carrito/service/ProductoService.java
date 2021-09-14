@@ -24,6 +24,9 @@ public class ProductoService {
 	public List<Producto> findAllProducto(){
 		return productoRepo.findAll();
 	}
+	public Producto findProductoByNombre(String nombre) {
+		return productoRepo.findProductoByName(nombre);
+	}
 	public List<Producto> findProductoPorPaginacion(Integer cantidadPorPagina, Integer numeroPagina ){
 		List<Producto> productos = productoRepo.findAll();
 		List<Producto> productosMostrados = new ArrayList<>();
@@ -33,7 +36,7 @@ public class ProductoService {
 		return productosMostrados;
 	}
 	public Producto editarProducto(Producto producto) {
-		Producto productoEditado= productoRepo.findProductoById((Long)producto.getId());
+		Producto productoEditado= productoRepo.findProductoById(producto.getId());
 		Integer estadoProducto = productoEditado.getEstado();
 		
 		FuncionUtil util = new FuncionUtil();
@@ -43,7 +46,7 @@ public class ProductoService {
 		System.out.println("el producto editado es:"+productoEditado);
 		return productoRepo.save(productoEditado);
 	}
-	public Producto eliminarProducto(Long id) {
+	public Producto eliminarProducto(Integer id) {
 		Producto productoEliminado =  productoRepo.findProductoById(id);
 		productoEliminado.setEstado(0);
 		return productoRepo.save(productoEliminado);

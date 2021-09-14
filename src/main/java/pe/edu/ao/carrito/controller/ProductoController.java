@@ -1,8 +1,10 @@
 package pe.edu.ao.carrito.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import pe.edu.ao.carrito.model.Compra;
 import pe.edu.ao.carrito.model.Producto;
+import pe.edu.ao.carrito.service.CompraService;
 import pe.edu.ao.carrito.service.ProductoService;
 
 
@@ -25,8 +29,10 @@ import pe.edu.ao.carrito.service.ProductoService;
 @RequestMapping("/producto")
 public class ProductoController {
 	private final ProductoService productoService;
-	public ProductoController(ProductoService productoService ) {
+	private final CompraService compraService;
+	public ProductoController(ProductoService productoService,CompraService compraService ) {
 		this.productoService=productoService;
+		this.compraService=compraService;
 	}
 	@PostMapping("/add")
     public ResponseEntity<Producto> addEmployee(@RequestBody Producto producto) {
@@ -111,6 +117,21 @@ public class ProductoController {
 		output.put("se ha generado una compra del usuario con los siguientes productos", misProductos);
 		output.put("usuario", miSession.getAttribute("usuario"));
 		
+		Integer idUsuario=(Integer) miSession.getAttribute("idUsuario");
+		Date date = new Date();
+		for (Entry<String, Integer> producto : misProductos.entrySet()) {
+			String nombreProducto = producto.getKey();
+			Integer cantidadProducto = producto.getValue();
+			Compra compra = new Compra();
+			Integer idProducto;
+			idProducto = productoService.findProductoByNombre(nombreProducto).getId();
+			
+			compra.setIdProducto(idProducto);
+			compra.setCantidad(cantidadProducto);
+			compra.setFecha(date);
+			compra.setIdUsuario(idUsuario);
+			compraService.addCompra(compra);
+		}
 		return new ResponseEntity<>(output,HttpStatus.OK);
 	}	
 	@GetMapping("/all/{cantidadPorPagina}/{numeroDePagina}")
@@ -126,7 +147,7 @@ public class ProductoController {
 		return new ResponseEntity<>(productoEditado,HttpStatus.OK);
 	}
 	@PutMapping("/delete/{id}")
-	public ResponseEntity<Producto> eliminarProducto(@PathVariable("id") Long id ){
+	public ResponseEntity<Producto> eliminarProducto(@PathVariable("id") Integer id ){
 		Producto productoEliminado = productoService.eliminarProducto(id);
 		return new ResponseEntity<>(productoEliminado,HttpStatus.OK);
 	}
