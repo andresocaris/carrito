@@ -40,6 +40,16 @@ public class ProductoController {
         Producto newProducto = productoService.addProducto(producto);
         return new ResponseEntity<>(newProducto, HttpStatus.CREATED);
     }
+	@PutMapping("/update")
+	public ResponseEntity<Producto> editarProducto(@RequestBody Producto producto){
+		Producto productoEditado = productoService.editarProducto(producto);
+		return new ResponseEntity<>(productoEditado,HttpStatus.OK);
+	}
+	@PutMapping("/delete/{id}")
+	public ResponseEntity<Producto> eliminarProducto(@PathVariable("id") Integer id ){
+		Producto productoEliminado = productoService.eliminarProducto(id);
+		return new ResponseEntity<>(productoEliminado,HttpStatus.OK);
+	}
 	@GetMapping("/all")
 	public ResponseEntity<List<Producto>> obtenerProductos(HttpServletRequest request){
 		List<Producto> productos=productoService.findAllProducto();
@@ -64,12 +74,6 @@ public class ProductoController {
 		
 		//System.out.println("me imprime:"+productosSalida);
 		return new ResponseEntity<>(productos,HttpStatus.OK);
-	}
-	@GetMapping("/mis_objetos")
-	public ResponseEntity<List<Producto>> obtenerObjetos(HttpServletRequest request){
-		HttpSession miSession = request.getSession();
-		List<Producto> productosSalida = (List<Producto>) miSession.getAttribute("productos");
-		return new ResponseEntity<>(productosSalida,HttpStatus.OK);
 	}
 	@PostMapping("/agregar-productos")
 	public ResponseEntity<Object> agregarProductos(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
@@ -141,15 +145,6 @@ public class ProductoController {
 		List<Producto> productos = productoService.findProductoPorPaginacion(cantidadPorPagina,numeroDePagina);
 		return new ResponseEntity<>(productos,HttpStatus.OK);
 	}
-	@PutMapping("/update")
-	public ResponseEntity<Producto> editarProducto(@RequestBody Producto producto){
-		Producto productoEditado = productoService.editarProducto(producto);
-		return new ResponseEntity<>(productoEditado,HttpStatus.OK);
-	}
-	@PutMapping("/delete/{id}")
-	public ResponseEntity<Producto> eliminarProducto(@PathVariable("id") Integer id ){
-		Producto productoEliminado = productoService.eliminarProducto(id);
-		return new ResponseEntity<>(productoEliminado,HttpStatus.OK);
-	}
+
 	
 }

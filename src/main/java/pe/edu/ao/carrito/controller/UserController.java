@@ -10,7 +10,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,12 +23,10 @@ import pe.edu.ao.carrito.service.UsuarioService;
 @RestController
 public class UserController {
 	private final UsuarioService usuarioService;
-	
 	public UserController(UsuarioService usuarioService) {
 		this.usuarioService=usuarioService;
 	}
-	
-	@PostMapping("user")
+	@PostMapping("/obtener-usuario")
 	public User login( HttpServletRequest request,@RequestParam("user") String username, @RequestParam("password") String pwd) {
 		
 		Usuario usuario = usuarioService.busquedaPorNombreContrasena(username, pwd); 
@@ -46,10 +43,6 @@ public class UserController {
 			miSession.setAttribute("idUsuario", usuario.getId());
 			return user;
 		}
-	}
-	@RequestMapping("hello")
-	public String helloWorld(@RequestParam(value="name", defaultValue="World") String name) {
-		return "Hello "+name+"!!";
 	}
 	private String getJWTToken(String username) {
 		String secretKey="mySecretKey";

@@ -27,8 +27,9 @@ public class CarritoApplication {
 			http.csrf().disable()
 				.addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.authorizeRequests()
-				.antMatchers(HttpMethod.POST, "/user").permitAll()
+				.antMatchers(HttpMethod.POST, "/obtener-usuario").permitAll()
 				.antMatchers(HttpMethod.POST, "/compras/mostrar-por-usuario").permitAll()
+				.antMatchers(HttpMethod.GET, "/compras/mostrar-productos-mas-vendidos/{\\d+}").permitAll()
 				.antMatchers(HttpMethod.POST, "/compras/mostrar-por-usuario-paginacion/{\\d+}/{\\d+}").permitAll()
 //				.antMatchers(HttpMethod.POST, "/producto/agregar-productos").permitAll()
 				.anyRequest().authenticated();
