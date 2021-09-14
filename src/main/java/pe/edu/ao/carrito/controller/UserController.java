@@ -17,20 +17,35 @@ import org.springframework.web.bind.annotation.RestController;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import pe.edu.ao.carrito.model.User;
+import pe.edu.ao.carrito.model.Usuario;
+import pe.edu.ao.carrito.service.UsuarioService;
 
 
 @RestController
 public class UserController {
+	private final UsuarioService usuarioService;
+	
+	public UserController(UsuarioService usuarioService) {
+		this.usuarioService=usuarioService;
+	}
+	
 	@PostMapping("user")
 	public User login( HttpServletRequest request,@RequestParam("user") String username, @RequestParam("password") String pwd) {
-		String token=getJWTToken(username);
-		User user = new User();
-		user.setUser(username);
-		user.setToken(token);
-		HttpSession miSession = request.getSession();
-		miSession.setAttribute("usuario", username);
-		miSession.setAttribute("idUsuario", 1);
-		return user;
+		
+		Usuario usuario = usuarioService.busquedaPorNombreContrasena(username, pwd); 
+		if (usuario == null) {
+			return new User("no existe","no existe");
+		}else {
+		
+			String token=getJWTToken(username);
+			User user = new User();
+			user.setUser(username);
+			user.setToken(token);
+			HttpSession miSession = request.getSession();
+			miSession.setAttribute("usuario", username);
+			miSession.setAttribute("idUsuario", 1);
+			return user;
+		}
 	}
 	@RequestMapping("hello")
 	public String helloWorld(@RequestParam(value="name", defaultValue="World") String name) {
