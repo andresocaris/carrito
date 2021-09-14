@@ -14,7 +14,9 @@ public class Producto {
     private Integer id;
     private String name;
     private Integer costo;
+    private String categoria;
     private Integer estado;
+    
     
     public Integer getId() {
         return id;
@@ -37,6 +39,14 @@ public class Producto {
 	}
 
 
+	public String getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+
 	public Integer getEstado() {
 		return estado;
 	}
@@ -47,8 +57,7 @@ public class Producto {
 
 	@Override
 	public String toString() {
-		return "Producto [id=" + id + ", name=" + name + ", costo=" + costo + ", estado=" + estado + "]";
-	}
-    
-	
+		return "Producto [id=" + id + ", name=" + name + ", costo=" + costo + ", categoria=" + categoria + ", estado="
+				+ estado + "]";
+	}    
 }
