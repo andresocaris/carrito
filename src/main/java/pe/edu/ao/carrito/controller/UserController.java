@@ -1,6 +1,7 @@
 package pe.edu.ao.carrito.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,20 +28,31 @@ public class UserController {
 		this.usuarioService=usuarioService;
 	}
 	@PostMapping("/obtener-usuario")
-	public User login( HttpServletRequest request,@RequestParam("user") String username, @RequestParam("password") String pwd) {
-		
-		Usuario usuario = usuarioService.busquedaPorNombreContrasena(username, pwd); 
-		if (usuario == null) {
-			return new User("no existe","no existe");
-		}else {
-			String token=getJWTToken(username);
-			User user = new User();
-			user.setUser(username);
-			user.setToken(token);
-			HttpSession miSession = request.getSession();
-			miSession.setAttribute("usuario", username);
-			miSession.setAttribute("idUsuario", usuario.getId());
-			return user;
+	public HashMap<String,Object> login( HttpServletRequest request,@RequestParam("user") String username, @RequestParam("password") String pwd) {
+		HashMap<String,Object> data = new HashMap<String,Object>();
+		try{
+			Usuario usuario = usuarioService.busquedaPorNombreContrasena(username, pwd); 
+			if (usuario == null) {
+				data.put("success", false);
+				data.put("msg", "usuario no existe");
+				return data;
+			}else {
+				String token=getJWTToken(username);
+				User user = new User();
+				user.setUser(username);
+				user.setToken(token);
+				HttpSession miSession = request.getSession();
+				miSession.setAttribute("usuario", username);
+				miSession.setAttribute("idUsuario", usuario.getId());
+				data.put("success", true);
+				data.put("msg", user);
+				return data;
+			}			
+		}catch(Exception e){
+			e.printStackTrace();
+			data.put("success", false);
+			data.put("msg", e.getMessage());
+			return data;
 		}
 	}
 	private String getJWTToken(String username) {

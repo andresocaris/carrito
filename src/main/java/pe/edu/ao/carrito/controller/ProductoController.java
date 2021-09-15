@@ -35,10 +35,19 @@ public class ProductoController {
 		this.compraService=compraService;
 	}
 	@PostMapping("/add")
-    public ResponseEntity<Producto> addEmployee(@RequestBody Producto producto) {
-		producto.setEstado(1);
-        Producto newProducto = productoService.addProducto(producto);
-        return new ResponseEntity<>(newProducto, HttpStatus.CREATED);
+    public ResponseEntity<HashMap<String,Object>> addEmployee(@RequestBody Producto producto) {
+		HashMap<String,Object> data = new HashMap<String,Object>();
+		try {
+			producto.setEstado(1);
+	        Producto newProducto = productoService.addProducto(producto);
+	        data.put("success", true);
+	        data.put("msg", newProducto);
+	        return new ResponseEntity<>(data, HttpStatus.CREATED);
+		}catch(Exception e) {
+			data.put("success", true);
+			data.put("msg", e.getMessage());
+			return new ResponseEntity<>(data, HttpStatus.CREATED);
+		}
     }
 	@PutMapping("/update")
 	public ResponseEntity<HashMap<String,Object>> editarProducto(@RequestBody Producto producto){
@@ -64,84 +73,126 @@ public class ProductoController {
 			data.put("msg", productoEliminado);
 			return new ResponseEntity<>(data,HttpStatus.OK);
 		}catch(Exception e) {
+			e.printStackTrace();
 			data.put("success","false");
 			data.put("msg", e.getMessage());
 			return new ResponseEntity<>(data,HttpStatus.OK);
 		}
 	}
 	@GetMapping("/all")
-	public ResponseEntity<List<Producto>> obtenerProductos(HttpServletRequest request){
-		List<Producto> productos=productoService.findAllProducto();
-		HttpSession misession= request.getSession();
-		List<Producto> productosSalida2 = (List<Producto>) misession.getAttribute("productos");
-		if (productosSalida2==null) {
-			List<Producto> productosAIngresar=productoService.findAllProducto();
-			System.out.println("es nullo los productos");
-			misession.setAttribute("productos", productosAIngresar);
-		}else {
-			List<Producto> productosAIngresar=productoService.findAllProducto();
-			for (Producto x : productosAIngresar) {
-				productosSalida2.add(x);
-			}	
-			misession.setAttribute("productos", productosSalida2);
-			
-			System.out.println("no es nullo y los productos en mi session son");
-			System.out.println(productosSalida2);
+	public ResponseEntity<HashMap<String,Object>>obtenerProductos(HttpServletRequest request){
+		HashMap<String,Object> data = new HashMap<String,Object>();
+		try {
+			List<Producto> productos=productoService.findAllProducto();
+			HttpSession misession= request.getSession();
+			List<Producto> productosSalida2 = (List<Producto>) misession.getAttribute("productos");
+			if (productosSalida2==null) {
+				List<Producto> productosAIngresar=productoService.findAllProducto();
+				misession.setAttribute("productos", productosAIngresar);
+			}else {
+				List<Producto> productosAIngresar=productoService.findAllProducto();
+				for (Producto x : productosAIngresar) {
+					productosSalida2.add(x);
+				}	
+				misession.setAttribute("productos", productosSalida2);
+			}
+			data.put("success", true);
+			data.put("msg:", productos);
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			data.put("success", false);
+			data.put("msg", e.getMessage());	
+			return new ResponseEntity<>(data,HttpStatus.OK);
 		}
-		return new ResponseEntity<>(productos,HttpStatus.OK);
 	}
 	@GetMapping("/all/{cantidadPorPagina}/{numeroDePagina}")
-	public ResponseEntity<List<Producto>> mostrarPorPagina
+	public ResponseEntity<HashMap<String,Object> > mostrarPorPagina
 	( @PathVariable("cantidadPorPagina") Integer cantidadPorPagina, @PathVariable("numeroDePagina") Integer numeroDePagina ){
-		
-		List<Producto> productos = productoService.findProductoPorPaginacion(cantidadPorPagina,numeroDePagina);
-		return new ResponseEntity<>(productos,HttpStatus.OK);
+		HashMap<String,Object> data = new HashMap<String,Object>();
+		try {
+			List<Producto> productos = productoService.findProductoPorPaginacion(cantidadPorPagina,numeroDePagina);
+			data.put("success", true);
+			data.put("msg:", productos);
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}catch(Exception e){
+			e.printStackTrace();
+			data.put("success", false);
+			data.put("msg", e.getMessage());	
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}
 	}
 	@PostMapping("/agregar-productos")
-	public ResponseEntity<Object> agregarProductos(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
-		HttpSession miSession = request.getSession();
-		HashMap<String,Integer> misProductos =  (HashMap<String, Integer>) miSession.getAttribute("productos");
-		HashMap<String,Integer> productosIngresados = productos.get("productos");
-		HashMap<String,Integer> misProductosActualizado= productoService.agregarProductosAlHashMap(misProductos, productosIngresados);
-		miSession.setAttribute("productos", misProductosActualizado);
-		return new ResponseEntity<>(misProductosActualizado,HttpStatus.OK);
+	public ResponseEntity<HashMap<String,Object>> agregarProductos(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
+		HashMap<String,Object> data = new HashMap<String,Object>();
+		try {
+			HttpSession miSession = request.getSession();
+			HashMap<String,Integer> misProductos =  (HashMap<String, Integer>) miSession.getAttribute("productos");
+			HashMap<String,Integer> productosIngresados = productos.get("productos");
+			HashMap<String,Integer> misProductosActualizado= productoService.agregarProductosAlHashMap(misProductos, productosIngresados);
+			miSession.setAttribute("productos", misProductosActualizado);
+			data.put("success", true);
+			data.put("msg", misProductosActualizado);
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			data.put("msg", e.getMessage());
+			data.put("success", false);
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}
 	}
 	@PostMapping("/quitar-productos")
-	public ResponseEntity<Object> eliminarProductos(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
-		HttpSession miSession = request.getSession();
-		
-		HashMap<String,Integer> misProductos = (HashMap<String, Integer>) miSession.getAttribute("productos");
-		HashMap<String,Integer> productosIngresados = productos.get("productos");
-		HashMap<String,Integer> productosActualizados=productoService.quitarproductosHashMap(misProductos,productosIngresados);
-		
-		miSession.setAttribute("productos", productosActualizados);
-		return new ResponseEntity<>(productosActualizados,HttpStatus.OK);
+	public ResponseEntity<HashMap<String,Object>> eliminarProductos(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
+		HashMap<String,Object> data = new HashMap<String,Object>();
+		try {
+			HttpSession miSession = request.getSession();
+			HashMap<String,Integer> misProductos = (HashMap<String, Integer>) miSession.getAttribute("productos");
+			HashMap<String,Integer> productosIngresados = productos.get("productos");
+			HashMap<String,Integer> productosActualizados=productoService.quitarproductosHashMap(misProductos,productosIngresados);
+			miSession.setAttribute("productos", productosActualizados);
+			data.put("msg", productosActualizados);
+			data.put("success", true);
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}catch(Exception e){
+			e.printStackTrace();
+			data.put("msg", e.getMessage());
+			data.put("success", false);
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}
 	}
 	@PostMapping("/generar-compra-del-usuario")
-	public ResponseEntity<HashMap<Object,Object>> generarCompra(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
-		HttpSession miSession = request.getSession();
-		
-		HashMap<String,Integer> misProductos = (HashMap<String, Integer>) miSession.getAttribute("productos");
-		HashMap<Object,Object> output = new HashMap<Object,Object>();
-		
-		output.put("se ha generado una compra del usuario con los siguientes productos", misProductos);
-		output.put("usuario", miSession.getAttribute("usuario"));
-		
-		Integer idUsuario=(Integer) miSession.getAttribute("idUsuario");
-		Date date = new Date();
-		for (Entry<String, Integer> producto : misProductos.entrySet()) {
-			String nombreProducto = producto.getKey();
-			Integer cantidadProducto = producto.getValue();
-			Compra compra = new Compra();
-			Integer idProducto;
-			idProducto = productoService.findProductoByNombre(nombreProducto).getId();
+	public ResponseEntity<HashMap<String,Object>> generarCompra(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
+		HashMap<String,Object> data = new HashMap<String,Object>();
+		try {
+			HttpSession miSession = request.getSession();	
+			HashMap<String,Integer> misProductos = (HashMap<String, Integer>) miSession.getAttribute("productos");
+			HashMap<Object,Object> output = new HashMap<Object,Object>();
+			output.put("se ha generado una compra del usuario con los siguientes productos", misProductos);
+			output.put("usuario", miSession.getAttribute("usuario"));
 			
-			compra.setIdProducto(idProducto);
-			compra.setCantidad(cantidadProducto);
-			compra.setFecha(date);
-			compra.setIdUsuario(idUsuario);
-			compraService.addCompra(compra);
+			Integer idUsuario=(Integer) miSession.getAttribute("idUsuario");
+			Date date = new Date();
+			for (Entry<String, Integer> producto : misProductos.entrySet()) {
+				String nombreProducto = producto.getKey();
+				Integer cantidadProducto = producto.getValue();
+				Compra compra = new Compra();
+				Integer idProducto;
+				idProducto = productoService.findProductoByNombre(nombreProducto).getId();
+				
+				compra.setIdProducto(idProducto);
+				compra.setCantidad(cantidadProducto);
+				compra.setFecha(date);
+				compra.setIdUsuario(idUsuario);
+				compraService.addCompra(compra);
+			}
+			data.put("msg", output);
+			data.put("success",true);
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}catch(Exception e){
+			e.printStackTrace();
+			data.put("msg", e.getMessage());
+			data.put("success", false);
+			return new ResponseEntity<>(data,HttpStatus.OK);
 		}
-		return new ResponseEntity<>(output,HttpStatus.OK);
 	}	
 }

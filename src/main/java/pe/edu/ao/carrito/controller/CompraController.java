@@ -72,19 +72,16 @@ public class CompraController {
 		HashMap<String,Object> data = new HashMap<String,Object>();
 		try {
 			Integer idUsuario=usuarioService.ObtenerIdPorNombre(usuario);
-			List<Compra> compras=compraService.comprasPorUsuario(idUsuario);
-			
+			List<Compra> compras=compraService.comprasPorUsuario(idUsuario);	
 			ArrayList<HashMap<String,Object>> listaProductos = new  ArrayList<>();
 			for (Compra compra:compras) {
 				HashMap<String,Object> miHashMap= new HashMap<String,Object>();
 				Integer idProducto=compra.getIdProducto();
 				Producto producto = productoService.findProductoById(idProducto);
-				
 				String nameProducto=producto.getName();
 				Integer costoProducto=producto.getCosto();
 				Integer cantidad=compra.getCantidad();
-				Date fecha=compra.getFecha();
-				
+				Date fecha=compra.getFecha();	
 				miHashMap.put("nombre-producto", nameProducto);
 				miHashMap.put("costo-producto", costoProducto);
 				miHashMap.put("cantidad", cantidad);
@@ -99,50 +96,63 @@ public class CompraController {
 			data.put("success",true);
 			return new ResponseEntity<>(data,HttpStatus.OK);
 		}catch(Exception e) {
+			e.printStackTrace();
 			data.put("msg", e.getMessage());
 			data.put("success",false);
 			return new ResponseEntity<>(data,HttpStatus.OK);
 		}
-
 	}
 	@GetMapping("/mostrar-productos-mas-vendidos/{numeroProductos}")
 	public ResponseEntity<HashMap<String,Object>> mostrarDiezProductosMasVendidos(@PathVariable Integer numeroProductos){
 		HashMap<String,Object> data = new HashMap<String,Object>();
-		
-		Map<String,Integer> hashMap = new HashMap<String,Integer>();
-		List<Compra> compras = compraService.findAllCompra();
-		for (Compra compra:compras) {
-			Integer idProducto = compra.getIdProducto();
-			String nombreProducto=productoService.findProductoById(idProducto).getName();
-			Integer cantidadProducto=compra.getCantidad();
-			if (!hashMap.containsKey(nombreProducto)) hashMap.put( nombreProducto,cantidadProducto);
-			else {
-				Integer valorAnterior = hashMap.containsKey(nombreProducto)?hashMap.get(nombreProducto):0;
-				hashMap.put( nombreProducto, valorAnterior+cantidadProducto);
+		try {
+			Map<String,Integer> hashMap = new HashMap<String,Integer>();
+			List<Compra> compras = compraService.findAllCompra();
+			for (Compra compra:compras) {
+				Integer idProducto = compra.getIdProducto();
+				String nombreProducto=productoService.findProductoById(idProducto).getName();
+				Integer cantidadProducto=compra.getCantidad();
+				if (!hashMap.containsKey(nombreProducto)) hashMap.put( nombreProducto,cantidadProducto);
+				else {
+					Integer valorAnterior = hashMap.containsKey(nombreProducto)?hashMap.get(nombreProducto):0;
+					hashMap.put( nombreProducto, valorAnterior+cantidadProducto);
+				}
 			}
+			Map<Integer, String> treeMap = new TreeMap<Integer, String>();
+			for (Map.Entry<String, Integer> entry:hashMap.entrySet()) {
+				treeMap.put(-entry.getValue(),entry.getKey());
+			}
+			Map<String, Integer> treeMap2 = new LinkedHashMap<String, Integer>();
+			int cantidad=0;
+			for (Map.Entry<Integer, String> entry:treeMap.entrySet()) {
+				treeMap2.put(entry.getValue(),-entry.getKey());
+				if (cantidad == numeroProductos-1 )break;
+				cantidad++;
+			}
+			data.put("success", true);
+			data.put("msg", treeMap2);
+			return new ResponseEntity<>(data,HttpStatus.OK);			
+		}catch(Exception e){
+			e.printStackTrace();
+			data.put("succes", false);
+			data.put("msg", e.getMessage());
+			return new ResponseEntity<>(data,HttpStatus.OK);	
 		}
-		Map<Integer, String> treeMap = new TreeMap<Integer, String>();
-		for (Map.Entry<String, Integer> entry:hashMap.entrySet()) {
-			treeMap.put(-entry.getValue(),entry.getKey());
-		}
-		Map<String, Integer> treeMap2 = new LinkedHashMap<String, Integer>();
-		int cantidad=0;
-		for (Map.Entry<Integer, String> entry:treeMap.entrySet()) {
-			treeMap2.put(entry.getValue(),-entry.getKey());
-			if (cantidad == numeroProductos-1 )break;
-			cantidad++;
-		}
-		data.put("success", true);
-		data.put("data", treeMap2);
-		return new ResponseEntity<>(data,HttpStatus.OK);
 	}
 	@GetMapping("/mostrar-categoria-mas-demandadas/{cantidad}")
 	public ResponseEntity<HashMap<String,Object>> mostrarCategoriaMasDemandad(@PathVariable Integer cantidad){
 		HashMap<String,Object> data = new HashMap<String,Object>();
-		List<Compra> compras = compraService.findAllCompra();
-		List<String> categoriasMasDemandadas=compraService.categoriaMasDemanda(compras,cantidad);
-		data.put("success",true);
-		data.put("data",categoriasMasDemandadas);
-		return new ResponseEntity<>(data,HttpStatus.OK);
+		try {
+			List<Compra> compras = compraService.findAllCompra();
+			List<String> categoriasMasDemandadas=compraService.categoriaMasDemanda(compras,cantidad);
+			data.put("success",true);
+			data.put("data",categoriasMasDemandadas);
+			return new ResponseEntity<>(data,HttpStatus.OK);			
+		}catch(Exception e) {
+			e.printStackTrace();
+			data.put("success",false);
+			data.put("data",e.getMessage());
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}
 	}
 }
