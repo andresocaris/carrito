@@ -106,8 +106,9 @@ public class CompraController {
 
 	}
 	@GetMapping("/mostrar-productos-mas-vendidos/{numeroProductos}")
-	public ResponseEntity<Object> mostrarDiezProductosMasVendidos(@PathVariable Integer numeroProductos){
-		Map<String,Integer> data = new HashMap<String,Integer>();
+	public ResponseEntity<HashMap<String,Object>> mostrarDiezProductosMasVendidos(@PathVariable Integer numeroProductos){
+		HashMap<String,Object> data = new HashMap<String,Object>();
+		
 		Map<String,Integer> hashMap = new HashMap<String,Integer>();
 		List<Compra> compras = compraService.findAllCompra();
 		for (Compra compra:compras) {
@@ -131,12 +132,17 @@ public class CompraController {
 			if (cantidad == numeroProductos-1 )break;
 			cantidad++;
 		}
-		return new ResponseEntity<>(treeMap2,HttpStatus.OK);
+		data.put("success", true);
+		data.put("data", treeMap2);
+		return new ResponseEntity<>(data,HttpStatus.OK);
 	}
 	@GetMapping("/mostrar-categoria-mas-demandadas/{cantidad}")
-	public ResponseEntity<List<String>> mostrarCategoriaMasDemandad(@PathVariable Integer cantidad){
+	public ResponseEntity<HashMap<String,Object>> mostrarCategoriaMasDemandad(@PathVariable Integer cantidad){
+		HashMap<String,Object> data = new HashMap<String,Object>();
 		List<Compra> compras = compraService.findAllCompra();
 		List<String> categoriasMasDemandadas=compraService.categoriaMasDemanda(compras,cantidad);
-		return new ResponseEntity<>(categoriasMasDemandadas,HttpStatus.OK);
+		data.put("success",true);
+		data.put("data",categoriasMasDemandadas);
+		return new ResponseEntity<>(data,HttpStatus.OK);
 	}
 }
