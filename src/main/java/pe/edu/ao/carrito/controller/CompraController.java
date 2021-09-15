@@ -107,6 +107,7 @@ public class CompraController {
 	}
 	@GetMapping("/mostrar-productos-mas-vendidos/{numeroProductos}")
 	public ResponseEntity<Object> mostrarDiezProductosMasVendidos(@PathVariable Integer numeroProductos){
+		Map<String,Integer> data = new HashMap<String,Integer>();
 		Map<String,Integer> hashMap = new HashMap<String,Integer>();
 		List<Compra> compras = compraService.findAllCompra();
 		for (Compra compra:compras) {
