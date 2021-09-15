@@ -44,6 +44,7 @@ public class UserController {
 				HttpSession miSession = request.getSession();
 				miSession.setAttribute("usuario", username);
 				miSession.setAttribute("idUsuario", usuario.getId());
+				miSession.setAttribute("productos", null);
 				data.put("success", true);
 				data.put("msg", user);
 				return data;
