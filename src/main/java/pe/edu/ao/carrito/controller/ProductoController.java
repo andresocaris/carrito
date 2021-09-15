@@ -61,11 +61,9 @@ public class ProductoController {
 			misession.setAttribute("productos", productosAIngresar);
 		}else {
 			List<Producto> productosAIngresar=productoService.findAllProducto();
-			
 			for (Producto x : productosAIngresar) {
 				productosSalida2.add(x);
-			}
-
+			}	
 			misession.setAttribute("productos", productosSalida2);
 			
 			System.out.println("no es nullo y los productos en mi session son");
@@ -84,19 +82,21 @@ public class ProductoController {
 	public ResponseEntity<Object> agregarProductos(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
 		HttpSession miSession = request.getSession();
 		
-		HashMap<String,Integer> misProductos = (HashMap<String, Integer>) miSession.getAttribute("productos");
+		HashMap<String,Integer> misProductos =  (HashMap<String, Integer>) miSession.getAttribute("productos");
 		HashMap<String,Integer> productosIngresados = productos.get("productos");
-		
-		if (misProductos == null) {
-			misProductos = productosIngresados;
-		}else {
-			for (Map.Entry<String, Integer> producto : productosIngresados.entrySet()) {
-				Integer cantidadAnterior = misProductos.get(producto.getKey())==null?0:misProductos.get(producto.getKey());
-				misProductos.put(producto.getKey(), cantidadAnterior + producto.getValue());
-			}
-		}
-		miSession.setAttribute("productos", misProductos);
-		return new ResponseEntity<>(misProductos,HttpStatus.OK);
+		HashMap<String,Integer> misProductosActualizado= productoService.agregarProductosAlHashMap(misProductos, productosIngresados);
+//		if (misProductos == null) {
+//			misProductos = productosIngresados;
+//		}else {
+//			for (Map.Entry<String, Integer> producto : productosIngresados.entrySet()) {
+//				Integer cantidadAnterior = misProductos.get(producto.getKey())==null?0:misProductos.get(producto.getKey());
+//				misProductos.put(producto.getKey(), cantidadAnterior + producto.getValue());
+//			}
+//		}
+		System.out.println("estou aqui");
+		System.out.println(productosIngresados);
+		miSession.setAttribute("productos", misProductosActualizado);
+		return new ResponseEntity<>(misProductosActualizado,HttpStatus.OK);
 	}
 	@PostMapping("/quitar-productos")
 	public ResponseEntity<Object> eliminarProductos(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){

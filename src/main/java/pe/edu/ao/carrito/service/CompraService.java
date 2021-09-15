@@ -32,7 +32,7 @@ public class CompraService {
 	}
 	@Autowired
 	ProductoService productoService;
-	public List<String>categoriaMasDemanda(List<Compra> compras){
+	public List<String>categoriaMasDemanda(List<Compra> compras,Integer cantidadCategoria){
 		Map<String,Integer> hashMap= new HashMap<>();
 		for (Compra compra:compras) {
 			Integer idProducto=compra.getIdProducto();
@@ -50,8 +50,11 @@ public class CompraService {
 			treeMap.put(-entry.getValue(),entry.getKey());
 		}
 		List<String> categorias = new ArrayList<>();
+		Integer contador=0;
 		for (Map.Entry<Integer,String> entry:treeMap.entrySet()) {
+			if (contador==cantidadCategoria)break;
 			categorias.add(entry.getValue());
+			contador++;
 		}
 		return categorias;
 	}

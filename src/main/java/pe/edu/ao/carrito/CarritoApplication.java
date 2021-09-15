@@ -35,7 +35,7 @@ public class CarritoApplication {
 				.antMatchers(HttpMethod.GET, "/compras/mostrar-productos-mas-vendidos/{\\d+}").permitAll()
 				.antMatchers(HttpMethod.POST, "/compras/mostrar-por-usuario-paginacion/{\\d+}/{\\d+}").permitAll()
 
-				.antMatchers(HttpMethod.GET, "/compras/mostrar-categoria-mas-demandadas").permitAll()
+				.antMatchers(HttpMethod.GET, "/compras/mostrar-categoria-mas-demandadas/{\\d+}").permitAll()
 //				.antMatchers(HttpMethod.POST, "/producto/agregar-productos").permitAll()
 				.anyRequest().authenticated();
 		}

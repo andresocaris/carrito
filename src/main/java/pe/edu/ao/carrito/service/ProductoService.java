@@ -1,7 +1,9 @@
 package pe.edu.ao.carrito.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +56,20 @@ public class ProductoService {
 		Producto productoEliminado =  productoRepo.findProductoById(id);
 		productoEliminado.setEstado(0);
 		return productoRepo.save(productoEliminado);
+	}
+	public HashMap<String,Integer> agregarProductosAlHashMap(HashMap<String,Integer> misProductos,HashMap<String,Integer> productosIngresados) {
+		
+		if (misProductos == null) {
+			System.out.println("entre aqui");
+			misProductos = productosIngresados;
+			System.out.println("contenido");
+			System.out.println(misProductos);
+		}else {
+			for (Map.Entry<String, Integer> producto : productosIngresados.entrySet()) {
+				Integer cantidadAnterior = misProductos.get(producto.getKey())==null?0:misProductos.get(producto.getKey());
+				misProductos.put(producto.getKey(), cantidadAnterior + producto.getValue());
+			}
+		}
+		return misProductos;
 	}
 }
