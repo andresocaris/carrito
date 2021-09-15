@@ -39,7 +39,6 @@ public class CompraController {
 		HashMap<String,Object> data = new HashMap<String,Object>();
 		try {
 			Integer idUsuario=usuarioService.ObtenerIdPorNombre(usuario);
-		
 			List<Compra> compras=compraService.comprasPorUsuario(idUsuario);
 			ArrayList<HashMap<String,Object>> listaProductos = new  ArrayList<>();
 			for (Compra compra:compras) {
@@ -68,32 +67,43 @@ public class CompraController {
 		}
 	}
 	@PostMapping("/mostrar-por-usuario-paginacion/{cantidadPorPagina}/{numeroPagina}")
-	public ResponseEntity<ArrayList<HashMap<String,Object>>>mostrarProductosPorUsuarioPaginacion(
-			@PathVariable Integer cantidadPorPagina ,@PathVariable Integer numeroPagina,@RequestParam("usuario") String usuario){
-		Integer idUsuario=usuarioService.ObtenerIdPorNombre(usuario);
-		List<Compra> compras=compraService.comprasPorUsuario(idUsuario);
-		ArrayList<HashMap<String,Object>> listaProductos = new  ArrayList<>();
-		for (Compra compra:compras) {
-			HashMap<String,Object> miHashMap= new HashMap<String,Object>();
-			Integer idProducto=compra.getIdProducto();
-			Producto producto = productoService.findProductoById(idProducto);
+	public ResponseEntity<HashMap<String,Object>>mostrarProductosPorUsuarioPaginacion(
+			@PathVariable Integer cantidadPorPagina ,@PathVariable Integer numeroPagina,@RequestParam("usuario") String usuario) throws Exception{
+		HashMap<String,Object> data = new HashMap<String,Object>();
+		try {
+			Integer idUsuario=usuarioService.ObtenerIdPorNombre(usuario);
+			List<Compra> compras=compraService.comprasPorUsuario(idUsuario);
 			
-			String nameProducto=producto.getName();
-			Integer costoProducto=producto.getCosto();
-			Integer cantidad=compra.getCantidad();
-			Date fecha=compra.getFecha();
-			
-			miHashMap.put("nombre-producto", nameProducto);
-			miHashMap.put("costo-producto", costoProducto);
-			miHashMap.put("cantidad", cantidad);
-			miHashMap.put("fecha de compra", fecha);
-			listaProductos.add(miHashMap);
+			ArrayList<HashMap<String,Object>> listaProductos = new  ArrayList<>();
+			for (Compra compra:compras) {
+				HashMap<String,Object> miHashMap= new HashMap<String,Object>();
+				Integer idProducto=compra.getIdProducto();
+				Producto producto = productoService.findProductoById(idProducto);
+				
+				String nameProducto=producto.getName();
+				Integer costoProducto=producto.getCosto();
+				Integer cantidad=compra.getCantidad();
+				Date fecha=compra.getFecha();
+				
+				miHashMap.put("nombre-producto", nameProducto);
+				miHashMap.put("costo-producto", costoProducto);
+				miHashMap.put("cantidad", cantidad);
+				miHashMap.put("fecha de compra", fecha);
+				listaProductos.add(miHashMap);
+			}
+			ArrayList<HashMap<String,Object>> comprasMostradas = new ArrayList<>();
+			for (Integer i=cantidadPorPagina*(numeroPagina-1);i<cantidadPorPagina*numeroPagina;i++) {
+				comprasMostradas.add(listaProductos.get(i));
+			}
+			data.put("msg", comprasMostradas);
+			data.put("success",true);
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}catch(Exception e) {
+			data.put("msg", e.getMessage());
+			data.put("success",false);
+			return new ResponseEntity<>(data,HttpStatus.OK);
 		}
-		ArrayList<HashMap<String,Object>> comprasMostradas = new ArrayList<>();
-		for (Integer i=cantidadPorPagina*(numeroPagina-1);i<cantidadPorPagina*numeroPagina;i++) {
-			comprasMostradas.add(listaProductos.get(i));
-		}
-		return new ResponseEntity<>(comprasMostradas,HttpStatus.OK);
+
 	}
 	@GetMapping("/mostrar-productos-mas-vendidos/{numeroProductos}")
 	public ResponseEntity<Object> mostrarDiezProductosMasVendidos(@PathVariable Integer numeroProductos){
