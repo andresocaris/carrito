@@ -127,6 +127,11 @@ public class ProductoController {
 		HashMap<String,Object> data = new HashMap<String,Object>();
 		try {
 			HttpSession miSession = request.getSession();
+			if (miSession.getAttribute("usuario")==null) {
+				data.put("success", false);
+				data.put("msg", "no has iniciado sesion o no has agregados el token");
+				return new ResponseEntity<>(data,HttpStatus.OK);
+			}
 			HashMap<String,Integer> misProductos =  (HashMap<String, Integer>) miSession.getAttribute("productos");
 			HashMap<String,Integer> productosIngresados = productos.get("productos");
 			HashMap<String,Integer> misProductosActualizado= productoService.agregarProductosAlHashMap(misProductos, productosIngresados);
@@ -146,6 +151,11 @@ public class ProductoController {
 		HashMap<String,Object> data = new HashMap<String,Object>();
 		try {
 			HttpSession miSession = request.getSession();
+			if (miSession.getAttribute("usuario")==null) {
+				data.put("success", false);
+				data.put("msg", "no has iniciado sesion o no has agregado el token");
+				return new ResponseEntity<>(data,HttpStatus.OK);
+			}
 			HashMap<String,Integer> misProductos = (HashMap<String, Integer>) miSession.getAttribute("productos");
 			HashMap<String,Integer> productosIngresados = productos.get("productos");
 			HashMap<String,Integer> productosActualizados=productoService.quitarproductosHashMap(misProductos,productosIngresados);
@@ -164,7 +174,12 @@ public class ProductoController {
 	public ResponseEntity<HashMap<String,Object>> generarCompra(HttpServletRequest request,@RequestBody HashMap<String,HashMap<String,Integer> > productos){
 		HashMap<String,Object> data = new HashMap<String,Object>();
 		try {
-			HttpSession miSession = request.getSession();	
+			HttpSession miSession = request.getSession();		
+			if (miSession.getAttribute("usuario")==null) {
+				data.put("success", false);
+				data.put("msg", "no has iniciado sesion o no has agregado el token");
+				return new ResponseEntity<>(data,HttpStatus.OK);
+			}
 			HashMap<String,Integer> misProductos = (HashMap<String, Integer>) miSession.getAttribute("productos");
 			HashMap<Object,Object> output = new HashMap<Object,Object>();
 			output.put("se ha generado una compra del usuario con los siguientes productos", misProductos);
