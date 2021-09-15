@@ -33,7 +33,6 @@ public class UserController {
 		if (usuario == null) {
 			return new User("no existe","no existe");
 		}else {
-		
 			String token=getJWTToken(username);
 			User user = new User();
 			user.setUser(username);

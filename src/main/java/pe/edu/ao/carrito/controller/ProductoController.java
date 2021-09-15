@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import pe.edu.ao.carrito.exception.ProductoException;
 import pe.edu.ao.carrito.model.Compra;
 import pe.edu.ao.carrito.model.Producto;
 import pe.edu.ao.carrito.service.CompraService;
@@ -41,14 +42,33 @@ public class ProductoController {
         return new ResponseEntity<>(newProducto, HttpStatus.CREATED);
     }
 	@PutMapping("/update")
-	public ResponseEntity<Producto> editarProducto(@RequestBody Producto producto){
-		Producto productoEditado = productoService.editarProducto(producto);
-		return new ResponseEntity<>(productoEditado,HttpStatus.OK);
+	public ResponseEntity<HashMap<String,Object>> editarProducto(@RequestBody Producto producto){
+		HashMap<String,Object> data = new HashMap<String,Object>();
+		try {
+			Producto productoEditado = productoService.editarProducto(producto);
+			data.put("success", true);
+			data.put("msg", productoEditado);
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			data.put("success", false);
+			data.put("msg",e.getMessage() );
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}
 	}
 	@PutMapping("/delete/{id}")
-	public ResponseEntity<Producto> eliminarProducto(@PathVariable("id") Integer id ){
-		Producto productoEliminado = productoService.eliminarProducto(id);
-		return new ResponseEntity<>(productoEliminado,HttpStatus.OK);
+	public ResponseEntity<HashMap<String,Object>> eliminarProducto(@PathVariable("id") Integer id ) throws ProductoException{
+		HashMap<String,Object> data = new HashMap<String,Object>();
+		try {
+			Producto productoEliminado = productoService.eliminarProducto(id);
+			data.put("success","true");
+			data.put("msg", productoEliminado);
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}catch(Exception e) {
+			data.put("success","false");
+			data.put("msg", e.getMessage());
+			return new ResponseEntity<>(data,HttpStatus.OK);
+		}
 	}
 	@GetMapping("/all")
 	public ResponseEntity<List<Producto>> obtenerProductos(HttpServletRequest request){

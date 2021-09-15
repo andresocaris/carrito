@@ -16,7 +16,11 @@ public class UsuarioService {
 	public Usuario busquedaPorNombreContrasena(String nombre,String contrasena) {
 		return usuarioRepo.findByNombreAndPwd(nombre,contrasena);
 	}
-	public Integer ObtenerIdPorNombre(String nombre) {
-		return usuarioRepo.getByNombre(nombre).getId();
+	public Integer ObtenerIdPorNombre(String nombre) throws Exception {
+		Usuario usuario = usuarioRepo.getByNombre(nombre);
+		if (usuario==null){
+			throw new Exception("No existe Usuario");
+		}
+		return usuario.getId();
 	}
 }

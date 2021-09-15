@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import pe.edu.ao.carrito.exception.ProductoException;
 import pe.edu.ao.carrito.interfaz.ProductoRepo;
 import pe.edu.ao.carrito.model.Producto;
 import pe.edu.ao.carrito.util.FuncionUtil;
@@ -36,12 +37,13 @@ public class ProductoService {
 	public List<Producto> findProductoPorPaginacion(Integer cantidadPorPagina, Integer numeroPagina ){
 		List<Producto> productos = productoRepo.findAll();
 		List<Producto> productosMostrados = new ArrayList<>();
-		for (int i=cantidadPorPagina*(numeroPagina-1);i<cantidadPorPagina*numeroPagina;i++) {
+		Integer cantidadProductos=productos.size();
+		for (int i=cantidadPorPagina*(numeroPagina-1);i<Math.min(cantidadPorPagina*numeroPagina,cantidadProductos);i++) {
 			productosMostrados.add(productos.get(i));
 		}
 		return productosMostrados;
 	}
-	public Producto editarProducto(Producto producto) {
+	public Producto editarProducto(Producto producto){
 		Producto productoEditado= productoRepo.findProductoById(producto.getId());
 		Integer estadoProducto = productoEditado.getEstado();
 		
@@ -52,8 +54,11 @@ public class ProductoService {
 		System.out.println("el producto editado es:"+productoEditado);
 		return productoRepo.save(productoEditado);
 	}
-	public Producto eliminarProducto(Integer id) {
+	public Producto eliminarProducto(Integer id) throws ProductoException {
 		Producto productoEliminado =  productoRepo.findProductoById(id);
+		if (productoEliminado==null) {
+			throw new ProductoException("no existe el producto con el id correspondiente");
+		}
 		productoEliminado.setEstado(0);
 		return productoRepo.save(productoEliminado);
 	}

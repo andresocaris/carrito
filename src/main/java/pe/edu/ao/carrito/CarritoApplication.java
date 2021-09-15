@@ -27,6 +27,9 @@ public class CarritoApplication {
 			http.csrf().disable()
 				.addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
 				.authorizeRequests()
+
+				.antMatchers(HttpMethod.GET, "/producto/all").permitAll()
+				.antMatchers(HttpMethod.GET, "/producto/all/{\\d+}/{\\d+}").permitAll()
 				.antMatchers(HttpMethod.POST, "/producto/add").permitAll()
 				.antMatchers(HttpMethod.PUT, "/producto/update").permitAll()
 				.antMatchers(HttpMethod.PUT, "/producto/delete/{\\d+}").permitAll()
