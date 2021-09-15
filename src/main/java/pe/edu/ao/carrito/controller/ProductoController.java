@@ -132,6 +132,7 @@ public class ProductoController {
 				data.put("msg", "no has iniciado sesion o no has agregados el token");
 				return new ResponseEntity<>(data,HttpStatus.OK);
 			}
+			//System.out.println("valor:   "+miSession.getAttribute("productos"));
 			HashMap<String,Integer> misProductos =  (HashMap<String, Integer>) miSession.getAttribute("productos");
 			HashMap<String,Integer> productosIngresados = productos.get("productos");
 			HashMap<String,Integer> misProductosActualizado= productoService.agregarProductosAlHashMap(misProductos, productosIngresados);
