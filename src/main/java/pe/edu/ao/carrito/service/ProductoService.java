@@ -58,12 +58,8 @@ public class ProductoService {
 		return productoRepo.save(productoEliminado);
 	}
 	public HashMap<String,Integer> agregarProductosAlHashMap(HashMap<String,Integer> misProductos,HashMap<String,Integer> productosIngresados) {
-		
 		if (misProductos == null) {
-			System.out.println("entre aqui");
 			misProductos = productosIngresados;
-			System.out.println("contenido");
-			System.out.println(misProductos);
 		}else {
 			for (Map.Entry<String, Integer> producto : productosIngresados.entrySet()) {
 				Integer cantidadAnterior = misProductos.get(producto.getKey())==null?0:misProductos.get(producto.getKey());
@@ -72,4 +68,17 @@ public class ProductoService {
 		}
 		return misProductos;
 	}
+	public HashMap<String, Integer> quitarproductosHashMap(HashMap<String, Integer> misProductos,
+		HashMap<String, Integer> productosIngresados) {
+		if (misProductos != null) {
+			for (Map.Entry<String, Integer> producto : productosIngresados.entrySet()) {
+				Integer cantidadAnterior = misProductos.get(producto.getKey())==null?0:misProductos.get(producto.getKey());
+				Integer cantidadActual=cantidadAnterior-producto.getValue()<0?0:cantidadAnterior-producto.getValue();
+				if (cantidadActual>0)misProductos.put(producto.getKey(), cantidadActual);
+				else misProductos.remove(producto.getKey());
+			}
+		}
+		return misProductos;
+	}
+	 
 }
